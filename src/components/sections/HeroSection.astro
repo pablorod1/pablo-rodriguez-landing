@@ -1,0 +1,67 @@
+---
+// 🎯 Hero Section: “Crear página web profesional”
+
+// ✅ H1: Crear Página Web Profesional para tu Negocio
+
+// 📝 **Intro (parr. breve y directo al punto):
+// Texto SEO + emocional + resolutivo**
+
+// Si tu negocio no tiene una página web, está perdiendo visibilidad, clientes y ventas. Hoy, tus futuros clientes te buscan en Google, comparan, y eligen al que transmite más confianza desde el primer clic. Nosotros te ayudamos a crear una página web profesional, optimizada para aparecer en buscadores y diseñada para convertir visitas en oportunidades reales.
+
+// 🔘 CTA Principal:
+// [ Quiero mi Página Web ]
+
+// (Botón visible al primer scroll, en color contrastado y con scroll automático al formulario o popup de contacto rápido)
+import BlurText from "@/components/react-bits/BlurText";
+import { Button } from "@/components/ui/button";
+import CardSwapDemo from "../react-bits/Components/CardSwap/CardSwapDemo";
+
+const cards = [
+  {
+    title: "https://negococloud.es",
+    imageSrc: "/negoco.webp",
+  },
+  {
+    title: "https://asesoresmsl.com",
+    imageSrc: "/asesoresmsl.webp",
+  },
+  {
+    title: "http://realtymarket.es",
+    imageSrc: "/realty.webp",
+  },
+];
+---
+
+<section class="py-12 relative max-w-7xl mx-auto grid">
+  <div class="h-screen mt-32 w-full z-40 relative">
+    <BlurText
+      text="Creamos la página web profesional que tu empresa necesita"
+      animateBy="words"
+      direction="top"
+      stepDuration={0.35}
+      className="text-5xl mb-8 font-bold text-primary max-w-[25ch]"
+      client:load
+      delay={100}
+    />
+
+    <p class="text-lg mb-6 text-secondary max-w-[40ch] font-medium">
+      Tu web es la puerta de entrada a tu negocio. Haz que te encuentren y
+      confíen desde el primer clic.
+    </p>
+    <Button size="lg" className="border-0 font-semibold">
+      Quiero mi página web
+    </Button>
+
+    <div class="relative h-[300px]">
+      <CardSwapDemo
+        cardDistance={20}
+        verticalDistance={40}
+        skewAmount={6}
+        height={400}
+        width={800}
+        items={cards}
+        client:load
+      />
+    </div>
+  </div>
+</section>

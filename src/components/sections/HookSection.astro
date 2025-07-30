@@ -1,0 +1,46 @@
+---
+//  🧩 H2: ¿Por Qué Necesitas Crear una Página Web?
+
+// 💬 Copy:
+// ```
+// Hoy en día, si no estás en internet, simplemente no existes. Tus potenciales clientes están buscando en Google lo que tú ofreces, pero si no tienes una web profesional, probablemente estén eligiendo a tu competencia.
+
+// Crear una página web no es solo una cuestión de presencia digital, es una herramienta comercial activa que trabaja por tu negocio las 24 horas del día.
+// ```
+
+// ✅ Bullet Points (con foco en beneficios directos):
+// - Aparece en Google y gana visibilidad local
+//     Estar presente en los primeros resultados te posiciona como una opción creíble y profesional.
+
+// - Consolida tu imagen de marca
+//     Una web moderna transmite confianza, seriedad y profesionalismo desde el primer segundo.
+
+// - Genera más clientes potenciales
+//     Formularios, llamadas y reservas desde cualquier dispositivo, incluso mientras duermes.
+
+// - Diferénciate de tu competencia
+//     Una web bien estructurada y enfocada a resultados marca la diferencia frente a negocios que aún dependen solo del boca a boca.
+
+// - Controla tu mensaje
+//     Tú decides cómo quieres que te vean: promociones, servicios, testimonios, contacto... todo en un solo lugar.
+
+import SectionComponent from "../SectionComponent.astro";
+import { CardsList } from "../hook-section/CardsList";
+---
+
+<SectionComponent>
+  <div
+    class="grid grid-cols-1 md:grid-cols-2 items-start justify-between w-full gap-8 mb-32"
+  >
+    <h2 class="text-5xl font-bold text-primary text-pretty">
+      ¿Por qué necesitas crear una página web?
+    </h2>
+    <p class="text-base text-secondary font-medium text-balance max-w-prose">
+      Hoy en día, si no estás en internet, simplemente no existes. Tus
+      potenciales clientes están buscando en Google lo que tú ofreces, pero si
+      no tienes una web profesional, probablemente estén eligiendo a tu
+      competencia.
+    </p>
+  </div>
+  <CardsList client:visible />
+</SectionComponent>

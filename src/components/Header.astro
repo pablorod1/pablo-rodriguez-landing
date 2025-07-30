@@ -1,0 +1,60 @@
+---
+import { LiquidButton } from "@/components/kokonutui/liquid-glass-card";
+import MetallicImage from "./MetallicImage";
+
+interface Link {
+  href: string;
+  label: string;
+}
+
+const links: Link[] = [
+  { href: "/", label: "Inicio" },
+  { href: "/servicios", label: "Servicios" },
+  { href: "/portafolio", label: "Portafolio" },
+  { href: "/contacto", label: "Contacto" },
+];
+---
+
+<!-- <LiquidGlassHeader client:load /> -->
+<header class="fixed z-50 top-4 w-full">
+  <nav
+    class="relative
+    flex justify-between items-center
+    py-1 px-4 max-w-5xl mx-auto w-full min-h-16 h-full
+    rounded-lg
+    backdrop-blur-xs
+    bg-gradient-to-b from-background-900/80 via-background-900 to-background-800/60
+    shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),_0_2px_6px_rgba(0,0,0,0.4)]
+    hover:from-background-900 hover:to-background-800
+    transition-colors duration-300 ease-in-out"
+  >
+    <!-- <div
+      class="absolute top-0 left-0 bg-white w-full h-1 rounded-t-md opacity-80 z-10"
+    >
+    </div> -->
+    <div class="text-2xl font-bold text-white">
+      <a href="/">
+        <MetallicImage client:load />
+      </a>
+    </div>
+    <ul
+      class="flex items-center gap-10 text-secondary font-semibold text-sm tracking-wide"
+    >
+      {
+        links.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              class="hover:text-primary transition-colors duration-300"
+            >
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <LiquidButton size="sm" client:load className="text-white"
+      >Contáctame</LiquidButton
+    >
+  </nav>
+</header>
