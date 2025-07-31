@@ -19,15 +19,15 @@ import CardSwapDemo from "../react-bits/Components/CardSwap/CardSwapDemo";
 const cards = [
   {
     title: "https://negococloud.es",
-    imageSrc: "/negoco.webp",
+    imageSrc: "/images/negoco.webp",
   },
   {
     title: "https://asesoresmsl.com",
-    imageSrc: "/asesoresmsl.webp",
+    imageSrc: "/images/asesoresmsl.webp",
   },
   {
     title: "http://realtymarket.es",
-    imageSrc: "/realty.webp",
+    imageSrc: "/images/realty.webp",
   },
 ];
 ---
@@ -52,13 +52,15 @@ const cards = [
       Quiero mi página web
     </Button>
 
-    <div class="relative h-[300px]">
+    <div class="relative h-[180px]">
       <CardSwapDemo
-        cardDistance={20}
-        verticalDistance={40}
-        skewAmount={6}
-        height={400}
+        cardDistance={15}
+        verticalDistance={25}
+        skewAmount={4}
+        height={300}
         width={800}
+        delay={4000}
+        pauseOnHover={false}
         items={cards}
         client:load
       />

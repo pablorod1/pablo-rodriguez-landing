@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@plugin "tailwindcss-motion";
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -205,4 +206,33 @@
 
 .animate-size {
   interpolate-size: allow-keywords;
+}
+
+/* Optimizaciones para CardSwap y animaciones 3D */
+.card-swap-container {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.card-swap-item {
+  transform-style: preserve-3d;
+  will-change: transform;
+  backface-visibility: hidden;
+  perspective: 1000px;
+  -webkit-transform-style: preserve-3d;
+  -webkit-backface-visibility: hidden;
+  -webkit-perspective: 1000px;
+}
+
+/* Optimizaciones para Safari/WebKit */
+@supports (-webkit-transform-style: preserve-3d) {
+  .card-swap-container,
+  .card-swap-item {
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    -webkit-transform-style: preserve-3d;
+    -webkit-backface-visibility: hidden;
+  }
 }

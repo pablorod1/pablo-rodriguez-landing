@@ -140,12 +140,13 @@ export function Safari({
         {imageSrc && (
           <image
             href={imageSrc}
-            width="1900"
-            height="960"
-            x="1"
-            y="52"
+            width={width}
+            height={height - 52}
+            x={0}
+            y={52}
             clipPath="url(#roundedBottom)"
-            className="w-full h-auto object-contain "
+            preserveAspectRatio="none"
+            className="w-full h-full object-cover"
           />
         )}
         {videoSrc && (

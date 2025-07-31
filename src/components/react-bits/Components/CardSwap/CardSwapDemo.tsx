@@ -1,8 +1,6 @@
-import { useState } from "react";
-
 import CardSwap from "./CardSwap";
-import { Card } from "@/components/ui/card";
 import { Safari } from "@/components/magicui/safari";
+import { useMemo } from "react";
 
 interface CardProps {
   title: string;
@@ -30,6 +28,20 @@ const CardSwapDemo = ({
   width,
   items,
 }: Props) => {
+  // Memoizar elementos Safari para evitar re-renders innecesarios
+  const safariElements = useMemo(
+    () =>
+      items.map((item, index) => (
+        <Safari
+          key={`safari-${item.title}-${index}`}
+          url={item.title}
+          imageSrc={item.imageSrc}
+          className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 [transform-style:preserve-3d] [will-change:transform] [backface-visibility:hidden] opacity-100"
+        />
+      )),
+    [items]
+  );
+
   return (
     <CardSwap
       cardDistance={cardDistance}
@@ -41,13 +53,7 @@ const CardSwapDemo = ({
       height={height}
       width={width}
     >
-      {items.map((item, index) => (
-        <Safari
-          url={item.title}
-          imageSrc={item.imageSrc}
-          className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 [transform-style:preserve-3d] [will-change:transform] [backface-visibility:hidden]"
-        />
-      ))}
+      {safariElements}
     </CardSwap>
   );
 };

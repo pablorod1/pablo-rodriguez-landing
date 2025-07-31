@@ -16,14 +16,17 @@ const links: Link[] = [
 ---
 
 <!-- <LiquidGlassHeader client:load /> -->
-<header class="fixed z-50 top-4 w-full">
+<header
+  class="fixed z-50 top-4 w-full
+motion-translate-x-in-[0%] motion-translate-y-in-[-123%] motion-opacity-in-[0%]"
+>
   <nav
     class="relative
     flex justify-between items-center
     py-1 px-4 max-w-5xl mx-auto w-full min-h-16 h-full
     rounded-lg
     backdrop-blur-xs
-    bg-gradient-to-b from-background-900/80 via-background-900 to-background-800/60
+    bg-gradient-to-b from-zinc-900 to-background-950/80
     shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),_0_2px_6px_rgba(0,0,0,0.4)]
     hover:from-background-900 hover:to-background-800
     transition-colors duration-300 ease-in-out"
@@ -32,11 +35,9 @@ const links: Link[] = [
       class="absolute top-0 left-0 bg-white w-full h-1 rounded-t-md opacity-80 z-10"
     >
     </div> -->
-    <div class="text-2xl font-bold text-white">
-      <a href="/">
-        <MetallicImage client:load />
-      </a>
-    </div>
+    <a href="/">
+      <MetallicImage client:load />
+    </a>
     <ul
       class="flex items-center gap-10 text-secondary font-semibold text-sm tracking-wide"
     >

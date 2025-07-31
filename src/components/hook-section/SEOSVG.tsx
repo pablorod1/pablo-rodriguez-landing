@@ -37,7 +37,13 @@ const SearchResultsSVG = () => {
         opacity={0.8}
       />
       {/* Google icon */}
-      <image xlinkHref="/google.svg" x="30" y="20" width="16" height="16" />
+      <image
+        xlinkHref="/icons/google.svg"
+        x="30"
+        y="20"
+        width="16"
+        height="16"
+      />
 
       {/* Search input */}
       <rect
@@ -51,7 +57,7 @@ const SearchResultsSVG = () => {
       />
       {/* Search icon */}
       <image
-        xlinkHref="/search.svg"
+        xlinkHref="/icons/search.svg"
         x="272"
         y="21"
         width="12"
@@ -150,7 +156,7 @@ const SearchResultsSVG = () => {
           {/* Highlight for first result */}
           {i === 0 && (
             <image
-              xlinkHref="/laurel-wreath-1.svg"
+              xlinkHref="/icons/laurel-wreath-1.svg"
               x="220"
               y="68"
               width="36"

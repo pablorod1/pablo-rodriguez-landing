@@ -60,7 +60,7 @@ export default function ConsolidateSVG() {
 
       {/* Maletín con sombra y brillo */}
       <image
-        xlinkHref="/check.svg"
+        xlinkHref="/icons/check.svg"
         x="120"
         y="100"
         width="80"
