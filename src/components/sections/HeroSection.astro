@@ -12,11 +12,12 @@
 // [ Quiero mi Página Web ]
 
 // (Botón visible al primer scroll, en color contrastado y con scroll automático al formulario o popup de contacto rápido)
-import BlurText from "@/components/react-bits/BlurText";
 import { Button } from "@/components/ui/button";
-import CardSwapDemo from "../react-bits/Components/CardSwap/CardSwapDemo";
+import CardSwapDemo, {
+  type CardItem,
+} from "../react-bits/Components/CardSwap/CardSwapDemo";
 
-const cards = [
+const cardItems: CardItem[] = [
   {
     title: "https://negococloud.es",
     imageSrc: "/images/negoco.webp",
@@ -32,37 +33,38 @@ const cards = [
 ];
 ---
 
-<section class="py-12 relative max-w-7xl mx-auto grid">
-  <div class="h-screen mt-32 w-full z-40 relative">
-    <BlurText
-      text="Creamos la página web profesional que tu empresa necesita"
-      animateBy="words"
-      direction="top"
-      stepDuration={0.35}
-      className="text-5xl mb-8 font-bold text-primary max-w-[25ch]"
-      client:load
-      delay={100}
-    />
+<section class="sticky inset-0 py-12 min-h-screen max-w-7xl mx-auto grid">
+  <div class="mt-32 w-full z-10 relative">
+    <h1
+      class="text-5xl mb-8 font-bold text-primary max-w-[25ch] motion-preset-blur-right motion-duration-1500 motion-delay-2000"
+    >
+      Creamos la página web profesional que tu empresa necesita
+    </h1>
 
-    <p class="text-lg mb-6 text-secondary max-w-[40ch] font-medium">
+    <p
+      class="text-lg mb-6 text-secondary max-w-[40ch] font-medium motion-preset-blur-right motion-duration-1600 motion-delay-2500"
+    >
       Tu web es la puerta de entrada a tu negocio. Haz que te encuentren y
       confíen desde el primer clic.
     </p>
-    <Button size="lg" className="border-0 font-semibold">
+    <Button
+      size="lg"
+      className="border-0 font-semibold motion-scale-in-0 motion-opacity-in-0 motion-delay-2700"
+    >
       Quiero mi página web
     </Button>
 
-    <div class="relative h-[180px]">
+    <div class="relative h-[300px] motion-opacity-in-0 motion-delay-3000">
       <CardSwapDemo
         cardDistance={15}
         verticalDistance={25}
         skewAmount={4}
-        height={300}
-        width={800}
-        delay={4000}
+        height={600}
+        width={780}
+        delay={8000}
         pauseOnHover={false}
-        items={cards}
-        client:load
+        items={cardItems}
+        client:only="react"
       />
     </div>
   </div>

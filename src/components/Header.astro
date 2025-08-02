@@ -1,5 +1,6 @@
 ---
 import { LiquidButton } from "@/components/kokonutui/liquid-glass-card";
+import { cn } from "@/lib/utils";
 import MetallicImage from "./MetallicImage";
 
 interface Link {
@@ -13,48 +14,59 @@ const links: Link[] = [
   { href: "/portafolio", label: "Portafolio" },
   { href: "/contacto", label: "Contacto" },
 ];
+
+const getLinkDelay = (index: number) => `motion-delay-${500 + index * 100}`;
 ---
 
-<!-- <LiquidGlassHeader client:load /> -->
 <header
-  class="fixed z-50 top-4 w-full
-motion-translate-x-in-[0%] motion-translate-y-in-[-123%] motion-opacity-in-[0%]"
+  class="fixed z-50 top-4 w-full px-4 lg:px-0
+motion-translate-x-in-[0%] motion-translate-y-in-[-123%] motion-opacity-in-[0%] motion-delay-500"
 >
   <nav
-    class="relative
+    class="relative overflow-hidden
     flex justify-between items-center
     py-1 px-4 max-w-5xl mx-auto w-full min-h-16 h-full
     rounded-lg
-    backdrop-blur-xs
+    backdrop-blur-lg
     bg-gradient-to-b from-zinc-900 to-background-950/80
     shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),_0_2px_6px_rgba(0,0,0,0.4)]
-    hover:from-background-900 hover:to-background-800
+    hover:from-zinc-900 hover:to-background-950
     transition-colors duration-300 ease-in-out"
   >
-    <!-- <div
-      class="absolute top-0 left-0 bg-white w-full h-1 rounded-t-md opacity-80 z-10"
+    <a
+      href="/"
+      class="motion-translate-y-in-[-80px] motion-opacity-in-[0%] motion-delay-800"
     >
-    </div> -->
-    <a href="/">
-      <MetallicImage client:load />
+      <MetallicImage client:idle />
     </a>
     <ul
       class="flex items-center gap-10 text-secondary font-semibold text-sm tracking-wide"
     >
       {
-        links.map((link) => (
-          <li>
-            <a
-              href={link.href}
-              class="hover:text-primary transition-colors duration-300"
-            >
-              {link.label}
-            </a>
+        links.map((link, index) => (
+          <li
+            class={cn(
+              "motion-translate-y-in-[-30px] motion-opacity-in-[0%]",
+              index === 0
+                ? "motion-delay-1000"
+                : index === 1
+                  ? "motion-delay-1200"
+                  : index === 2
+                    ? "motion-delay-1400"
+                    : index === 3
+                      ? "motion-delay-1600"
+                      : `motion-delay-${getLinkDelay(index)}`
+            )}
+          >
+            <a href={link.href}>{link.label}</a>
           </li>
         ))
       }
     </ul>
-    <LiquidButton size="sm" client:load className="text-white"
+    <LiquidButton
+      size="sm"
+      client:load
+      className="text-white motion-scale-in motion-opacity-in-0 motion-delay-1800"
       >Contáctame</LiquidButton
     >
   </nav>

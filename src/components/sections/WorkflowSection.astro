@@ -1,28 +1,92 @@
-<!-- 
- 🧩 H2: Cómo Creamos Tu Página Web Paso a Paso
+---
+//  🧩 H2: Cómo Creamos Tu Página Web Paso a Paso
 
-💬 Copy Introductorio:
-Sabemos que no eres técnico, y no necesitas serlo. Nuestro proceso está diseñado para que tú te enfoques en tu negocio, mientras nosotros nos encargamos de crear una página web profesional, optimizada y lista para funcionar desde el primer día.
+// 💬 Copy Introductorio:
+// Sabemos que no eres técnico, y no necesitas serlo. Nuestro proceso está diseñado para que tú te enfoques en tu negocio, mientras nosotros nos encargamos de crear una página web profesional, optimizada y lista para funcionar desde el primer día.
 
-✅ Fases del proceso (formato paso a paso con copy claro y directo):
+// ✅ Fases del proceso (formato paso a paso con copy claro y directo):
 
-Paso 1. Primera reunión — Entendemos tu negocio
-Hablamos contigo para conocer tu empresa, tus objetivos y a tu cliente ideal. Cuanto más sepamos, mejor será tu web.
+// Paso 1. Primera reunión — Entendemos tu negocio
+// Hablamos contigo para conocer tu empresa, tus objetivos y a tu cliente ideal. Cuanto más sepamos, mejor será tu web.
 
-Paso 2. Propuesta visual — Te presentamos un diseño inicial
-Creamos una propuesta de diseño adaptada a tu marca, que podrás revisar antes de continuar.
+// Paso 2. Propuesta visual — Te presentamos un diseño inicial
+// Creamos una propuesta de diseño adaptada a tu marca, que podrás revisar antes de continuar.
 
-Paso 3. Desarrollo — Construimos tu página web
-Codificamos tu web siguiendo las mejores prácticas de rendimiento, diseño responsive y SEO.
+// Paso 3. Desarrollo — Construimos tu página web
+// Codificamos tu web siguiendo las mejores prácticas de rendimiento, diseño responsive y SEO.
 
-Paso 4. Revisión y ajustes
-Te presentamos la web funcional. Recogemos tus comentarios y aplicamos los ajustes necesarios.
+// Paso 4. Revisión y ajustes — Te presentamos la web funcional
+// Te presentamos la web funcional. Recogemos tus comentarios y aplicamos los ajustes necesarios.
 
-Paso 5. Publicación — ¡Tu web está online!
-Nos encargamos de todo: dominio, hosting, configuración y puesta en marcha.
+// Paso 5. Optimización final — Dejamos tu web lista para despegar
+// Antes de publicarla, realizamos una revisión completa: velocidad, responsive, SEO básico, formularios, enlaces, textos… Todo debe funcionar como un reloj.
 
-Paso 6. Soporte inicial y formación (opcional)
-Si lo deseas, te enseñamos a actualizar textos, imágenes y publicaciones básicas sin depender de nadie.
+// Paso 6. Publicación — ¡Tu web está online!
+// Nos encargamos de todo: dominio, hosting, configuración y puesta en marcha.
 
-Este bloque puede funcionar muy bien con una línea de tiempo visual o iconografía.
--->
+// Este bloque puede funcionar muy bien con una línea de tiempo visual o iconografía.
+
+import SectionComponent from "../SectionComponent.astro";
+import MagicBento, {
+  type BentoCardProps,
+} from "@/components/react-bits/Components/MagicBento/MagicBento";
+const cardData: BentoCardProps[] = [
+  {
+    color: "#18181b",
+    title: "Entendemos tu negocio",
+    description:
+      "Hablamos contigo para conocer tu empresa, tus objetivos y a tu cliente ideal. Cuanto más sepamos, mejor será tu web.",
+    label: "Primera reunión",
+  },
+  {
+    color: "#18181b",
+    title: "Propuesta visual",
+    description:
+      "Creamos una propuesta de diseño adaptada a tu marca, que podrás revisar antes de continuar.",
+    label: "Te presentamos un diseño inicial",
+  },
+  {
+    color: "#18181b",
+    title: "Construimos tu página web",
+    description:
+      "Codificamos tu web siguiendo las mejores prácticas de rendimiento, diseño responsive y SEO.",
+    label: "Desarrollo",
+  },
+  {
+    color: "#18181b",
+    title: "Validamos el resultado final",
+    description:
+      "Te presentamos la web funcional. Recogemos tus comentarios y aplicamos los ajustes necesarios.",
+    label: "Revisión y ajustes",
+  },
+  {
+    color: "#18181b",
+    title: "Dejamos tu web lista para despegar",
+    description:
+      "Antes de publicarla, realizamos una revisión completa: velocidad, responsive, SEO básico, formularios, enlaces, textos… Todo debe funcionar como un reloj.",
+    label: "Optimización final",
+  },
+  {
+    color: "#18181b",
+    title: "¡Tu web está online!",
+    description:
+      "Nos encargamos de todo: dominio, hosting, configuración y puesta en marcha.",
+    label: "Publicación",
+  },
+];
+---
+
+<SectionComponent>
+  <div class="space-y-8">
+    <h3 class="text-5xl font-bold text-primary text-pretty">
+      Cómo Creamos Tu Página Web Paso a Paso
+    </h3>
+    <p class="text-base text-secondary font-medium text-balance max-w-[80ch]">
+      Sabemos que no eres técnico, y no necesitas serlo. Nuestro proceso está
+      diseñado para que tú te enfoques en tu negocio, mientras nosotros nos
+      encargamos de crear una página web profesional, optimizada y lista para
+      funcionar desde el primer día.
+    </p>
+    <MagicBento enableMagnetism={false} cards={cardData} client:only="react" />
+  </div>
+</SectionComponent>

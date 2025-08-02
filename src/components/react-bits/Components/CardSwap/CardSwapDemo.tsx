@@ -1,13 +1,14 @@
-import CardSwap from "./CardSwap";
+import React, { useMemo } from "react";
+import CardSwap, { type EasingType } from "./CardSwap";
 import { Safari } from "@/components/magicui/safari";
-import { useMemo } from "react";
+import { cn } from "@/lib/utils";
 
-interface CardProps {
+export interface CardItem {
   title: string;
   imageSrc: string;
 }
 
-interface Props {
+export interface CardSwapDemoProps {
   cardDistance?: number;
   verticalDistance?: number;
   delay?: number;
@@ -15,10 +16,13 @@ interface Props {
   pauseOnHover?: boolean;
   height?: number;
   width?: number;
-  items: CardProps[];
+  easing?: EasingType;
+  items: CardItem[];
+  className?: string;
+  onCardClick?: (index: number) => void;
 }
 
-const CardSwapDemo = ({
+const CardSwapDemo: React.FC<CardSwapDemoProps> = ({
   cardDistance = 60,
   verticalDistance = 70,
   delay = 5000,
@@ -26,9 +30,12 @@ const CardSwapDemo = ({
   pauseOnHover = false,
   height,
   width,
+  easing = "elastic",
   items,
-}: Props) => {
-  // Memoizar elementos Safari para evitar re-renders innecesarios
+  className,
+  onCardClick,
+}) => {
+  // Memoize Safari elements to prevent unnecessary re-renders
   const safariElements = useMemo(
     () =>
       items.map((item, index) => (
@@ -36,7 +43,11 @@ const CardSwapDemo = ({
           key={`safari-${item.title}-${index}`}
           url={item.title}
           imageSrc={item.imageSrc}
-          className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 [transform-style:preserve-3d] [will-change:transform] [backface-visibility:hidden] opacity-100"
+          className={cn(
+            "absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2",
+            "[transform-style:preserve-3d] [will-change:transform] [backface-visibility:hidden]",
+            "opacity-100"
+          )}
         />
       )),
     [items]
@@ -48,10 +59,12 @@ const CardSwapDemo = ({
       verticalDistance={verticalDistance}
       delay={delay}
       skewAmount={skewAmount}
-      easing={"elastic"}
+      easing={easing}
       pauseOnHover={pauseOnHover}
       height={height}
       width={width}
+      className={className}
+      onCardClick={onCardClick}
     >
       {safariElements}
     </CardSwap>

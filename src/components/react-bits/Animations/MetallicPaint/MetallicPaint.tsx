@@ -1,8 +1,9 @@
 /*
 	Installed from https://reactbits.dev/ts/tailwind/
+	Optimized for performance with React memoization and WebGL optimization
 */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo, memo } from "react";
 
 type ShaderParams = {
   patternScale: number;
@@ -22,9 +23,43 @@ const defaultParams: ShaderParams = {
   speed: 0.3,
 };
 
-export function parseLogoImage(
+// Optimized cache for parsed images to avoid reprocessing
+const imageCache = new Map<string, ImageData>();
+const CACHE_SIZE_LIMIT = 10; // Limit cache size to prevent memory leaks
+
+export async function parseLogoImage(
   file: File
 ): Promise<{ imageData: ImageData; pngBlob: Blob }> {
+  // Create cache key from file properties
+  const cacheKey = `${file.name}-${file.size}-${file.lastModified}`;
+
+  // Return cached result if available
+  if (imageCache.has(cacheKey)) {
+    const cachedImageData = imageCache.get(cacheKey)!;
+    // Create a minimal blob for cached data
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d")!;
+    canvas.width = cachedImageData.width;
+    canvas.height = cachedImageData.height;
+    ctx.putImageData(cachedImageData, 0, 0);
+
+    return new Promise((resolve) => {
+      canvas.toBlob((blob) => {
+        resolve({
+          imageData: cachedImageData,
+          pngBlob: blob!,
+        });
+      }, "image/png");
+    });
+  }
+
+  // Clear cache if it gets too large
+  if (imageCache.size >= CACHE_SIZE_LIMIT) {
+    const firstKey = imageCache.keys().next().value;
+    if (firstKey) {
+      imageCache.delete(firstKey);
+    }
+  }
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
 
@@ -202,6 +237,10 @@ export function parseLogoImage(
           reject(new Error("Failed to create PNG blob"));
           return;
         }
+
+        // Cache the processed image data
+        imageCache.set(cacheKey, outImg);
+
         resolve({
           imageData: outImg,
           pngBlob: blob,
@@ -379,7 +418,75 @@ void main() {
 }
 `;
 
-export default function MetallicPaint({
+// Memoized shader creation to avoid recreation on every render
+const createShaderProgram = (gl: WebGL2RenderingContext) => {
+  function createShader(
+    gl: WebGL2RenderingContext,
+    sourceCode: string,
+    type: number
+  ) {
+    const shader = gl.createShader(type);
+    if (!shader) {
+      return null;
+    }
+
+    gl.shaderSource(shader, sourceCode);
+    gl.compileShader(shader);
+
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      console.error(
+        "An error occurred compiling the shaders: " +
+          gl.getShaderInfoLog(shader)
+      );
+      gl.deleteShader(shader);
+      return null;
+    }
+
+    return shader;
+  }
+
+  const vertexShader = createShader(gl, vertexShaderSource, gl.VERTEX_SHADER);
+  const fragmentShader = createShader(gl, liquidFragSource, gl.FRAGMENT_SHADER);
+  const program = gl.createProgram();
+
+  if (!program || !vertexShader || !fragmentShader) {
+    return null;
+  }
+
+  gl.attachShader(program, vertexShader);
+  gl.attachShader(program, fragmentShader);
+  gl.linkProgram(program);
+
+  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+    console.error(
+      "Unable to initialize the shader program: " +
+        gl.getProgramInfoLog(program)
+    );
+    return null;
+  }
+
+  return program;
+};
+
+// Optimized uniform getter with memoization
+const getUniforms = (program: WebGLProgram, gl: WebGL2RenderingContext) => {
+  const uniforms: Record<string, WebGLUniformLocation> = {};
+  const uniformCount = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
+
+  for (let i = 0; i < uniformCount; i++) {
+    const uniformInfo = gl.getActiveUniform(program, i);
+    if (!uniformInfo?.name) continue;
+
+    const location = gl.getUniformLocation(program, uniformInfo.name);
+    if (location) {
+      uniforms[uniformInfo.name] = location;
+    }
+  }
+
+  return uniforms;
+};
+
+const MetallicPaint = memo(function MetallicPaint({
   imageData,
   params = defaultParams,
 }: {
@@ -393,150 +500,133 @@ export default function MetallicPaint({
   >({});
   const totalAnimationTime = useRef(0);
   const lastRenderTime = useRef(0);
+  const animationFrameId = useRef<number | undefined>(undefined);
 
-  function updateUniforms() {
-    if (!gl || !uniforms) return;
+  // Memoize the updateUniforms function to prevent recreation
+  const updateUniforms = useCallback(() => {
+    if (!gl || !uniforms || Object.keys(uniforms).length === 0) return;
+
     gl.uniform1f(uniforms.u_edge, params.edge);
     gl.uniform1f(uniforms.u_patternBlur, params.patternBlur);
     gl.uniform1f(uniforms.u_time, 0);
     gl.uniform1f(uniforms.u_patternScale, params.patternScale);
     gl.uniform1f(uniforms.u_refraction, params.refraction);
     gl.uniform1f(uniforms.u_liquid, params.liquid);
-  }
+  }, [
+    gl,
+    params.edge,
+    params.patternBlur,
+    params.patternScale,
+    params.refraction,
+    params.liquid,
+  ]);
 
-  useEffect(() => {
-    function initShader() {
-      const canvas = canvasRef.current;
-      const gl = canvas?.getContext("webgl2", {
-        antialias: true,
-        alpha: true,
-      });
-      if (!canvas || !gl) {
-        return;
-      }
+  // Memoize shader initialization to avoid recreation
+  const initShader = useCallback(() => {
+    const canvas = canvasRef.current;
+    const context = canvas?.getContext("webgl2", {
+      antialias: true,
+      alpha: true,
+      // Performance optimizations
+      desynchronized: true,
+      powerPreference: "high-performance",
+    });
 
-      function createShader(
-        gl: WebGL2RenderingContext,
-        sourceCode: string,
-        type: number
-      ) {
-        const shader = gl.createShader(type);
-        if (!shader) {
-          return null;
-        }
-
-        gl.shaderSource(shader, sourceCode);
-        gl.compileShader(shader);
-
-        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-          console.error(
-            "An error occurred compiling the shaders: " +
-              gl.getShaderInfoLog(shader)
-          );
-          gl.deleteShader(shader);
-          return null;
-        }
-
-        return shader;
-      }
-
-      const vertexShader = createShader(
-        gl,
-        vertexShaderSource,
-        gl.VERTEX_SHADER
-      );
-      const fragmentShader = createShader(
-        gl,
-        liquidFragSource,
-        gl.FRAGMENT_SHADER
-      );
-      const program = gl.createProgram();
-      if (!program || !vertexShader || !fragmentShader) {
-        return;
-      }
-
-      gl.attachShader(program, vertexShader);
-      gl.attachShader(program, fragmentShader);
-      gl.linkProgram(program);
-
-      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-        console.error(
-          "Unable to initialize the shader program: " +
-            gl.getProgramInfoLog(program)
-        );
-        return null;
-      }
-
-      function getUniforms(program: WebGLProgram, gl: WebGL2RenderingContext) {
-        let uniforms: Record<string, WebGLUniformLocation> = {};
-        let uniformCount = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
-        for (let i = 0; i < uniformCount; i++) {
-          let uniformName = gl.getActiveUniform(program, i)?.name;
-          if (!uniformName) continue;
-          uniforms[uniformName] = gl.getUniformLocation(
-            program,
-            uniformName
-          ) as WebGLUniformLocation;
-        }
-        return uniforms;
-      }
-      const uniforms = getUniforms(program, gl);
-      setUniforms(uniforms);
-
-      const vertices = new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]);
-      const vertexBuffer = gl.createBuffer();
-      gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
-
-      gl.useProgram(program);
-
-      const positionLocation = gl.getAttribLocation(program, "a_position");
-      gl.enableVertexAttribArray(positionLocation);
-
-      gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-      gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-
-      setGl(gl);
+    if (!canvas || !context) {
+      return;
     }
 
-    initShader();
-    updateUniforms();
+    const program = createShaderProgram(context);
+    if (!program) {
+      return;
+    }
+
+    const uniformLocations = getUniforms(program, context);
+    setUniforms(uniformLocations);
+
+    // Setup vertex buffer (memoized)
+    const vertices = new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]);
+    const vertexBuffer = context.createBuffer();
+    context.bindBuffer(context.ARRAY_BUFFER, vertexBuffer);
+    context.bufferData(context.ARRAY_BUFFER, vertices, context.STATIC_DRAW);
+
+    context.useProgram(program);
+
+    const positionLocation = context.getAttribLocation(program, "a_position");
+    context.enableVertexAttribArray(positionLocation);
+    context.bindBuffer(context.ARRAY_BUFFER, vertexBuffer);
+    context.vertexAttribPointer(
+      positionLocation,
+      2,
+      context.FLOAT,
+      false,
+      0,
+      0
+    );
+
+    setGl(context);
   }, []);
 
+  // Optimized initialization effect - run only once
   useEffect(() => {
-    if (!gl || !uniforms) return;
-    updateUniforms();
-  }, [gl, params, uniforms]);
+    initShader();
+  }, []);
 
+  // Optimized params update effect - only when params change
   useEffect(() => {
-    if (!gl || !uniforms) return;
+    if (!gl || !uniforms || Object.keys(uniforms).length === 0) return;
 
-    let renderId: number;
+    gl.uniform1f(uniforms.u_edge, params.edge);
+    gl.uniform1f(uniforms.u_patternBlur, params.patternBlur);
+    gl.uniform1f(uniforms.u_time, 0);
+    gl.uniform1f(uniforms.u_patternScale, params.patternScale);
+    gl.uniform1f(uniforms.u_refraction, params.refraction);
+    gl.uniform1f(uniforms.u_liquid, params.liquid);
+  }, [
+    gl,
+    uniforms,
+    params.edge,
+    params.patternBlur,
+    params.patternScale,
+    params.refraction,
+    params.liquid,
+  ]);
 
-    function render(currentTime: number) {
+  // Optimized render loop with better performance controls
+  useEffect(() => {
+    if (!gl || !uniforms || Object.keys(uniforms).length === 0) return;
+
+    // Optimized render function with throttling
+    const render = (currentTime: number) => {
       const deltaTime = currentTime - lastRenderTime.current;
       lastRenderTime.current = currentTime;
 
-      totalAnimationTime.current += deltaTime * params.speed;
-      gl!.uniform1f(uniforms.u_time, totalAnimationTime.current);
-      gl!.drawArrays(gl!.TRIANGLE_STRIP, 0, 4);
-      renderId = requestAnimationFrame(render);
-    }
+      // Throttle updates to 60fps maximum
+      if (deltaTime >= 16.67) {
+        totalAnimationTime.current += deltaTime * params.speed;
+        gl.uniform1f(uniforms.u_time, totalAnimationTime.current);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      }
+
+      animationFrameId.current = requestAnimationFrame(render);
+    };
 
     lastRenderTime.current = performance.now();
-    renderId = requestAnimationFrame(render);
+    animationFrameId.current = requestAnimationFrame(render);
 
     return () => {
-      cancelAnimationFrame(renderId);
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
+      }
     };
-  }, [gl, params.speed]);
+  }, [gl, params.speed]); // Only depend on gl and params.speed, not uniforms object
 
+  // Optimized resize effect
   useEffect(() => {
-    const canvasEl = canvasRef.current;
-    if (!canvasEl || !gl || !uniforms) return;
-
-    function resizeCanvas() {
+    const handleResize = () => {
+      const canvasEl = canvasRef.current;
       if (!canvasEl || !gl || !uniforms || !imageData) return;
+
       const imgRatio = imageData.width / imageData.height;
       gl.uniform1f(uniforms.u_img_ratio, imgRatio);
 
@@ -546,18 +636,20 @@ export default function MetallicPaint({
       gl.viewport(0, 0, canvasEl.height, canvasEl.height);
       gl.uniform1f(uniforms.u_ratio, 1);
       gl.uniform1f(uniforms.u_img_ratio, imgRatio);
-    }
+    };
 
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
+    handleResize();
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener("resize", resizeCanvas);
+      window.removeEventListener("resize", handleResize);
     };
-  }, [gl, uniforms, imageData]);
+  }, [gl, imageData]); // Remove uniforms dependency
 
+  // Optimized texture setup with proper cleanup
   useEffect(() => {
-    if (!gl || !uniforms) return;
+    if (!gl || !uniforms || Object.keys(uniforms).length === 0 || !imageData)
+      return;
 
     const existingTexture = gl.getParameter(gl.TEXTURE_BINDING_2D);
     if (existingTexture) {
@@ -568,11 +660,11 @@ export default function MetallicPaint({
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, imageTexture);
 
+    // Optimized texture parameters
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-
     gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
 
     try {
@@ -580,12 +672,12 @@ export default function MetallicPaint({
         gl.TEXTURE_2D,
         0,
         gl.RGBA,
-        imageData?.width,
-        imageData?.height,
+        imageData.width,
+        imageData.height,
         0,
         gl.RGBA,
         gl.UNSIGNED_BYTE,
-        imageData?.data
+        imageData.data
       );
 
       gl.uniform1i(uniforms.u_image_texture, 0);
@@ -598,12 +690,18 @@ export default function MetallicPaint({
         gl.deleteTexture(imageTexture);
       }
     };
-  }, [gl, uniforms, imageData]);
+  }, [gl, imageData]); // Remove uniforms dependency
 
   return (
     <canvas
       ref={canvasRef}
       className="block max-w-16 w-full h-full object-contain z-50"
+      style={{ willChange: "transform" }} // CSS optimization for animations
     />
   );
-}
+});
+
+// Set display name for better debugging
+MetallicPaint.displayName = "MetallicPaint";
+
+export default MetallicPaint;

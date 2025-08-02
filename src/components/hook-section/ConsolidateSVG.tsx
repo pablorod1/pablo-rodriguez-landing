@@ -116,8 +116,8 @@ export default function ConsolidateSVG() {
             dx="0"
             dy="12"
             stdDeviation="6"
-            flood-color="#ea580c"
-            flood-opacity="0.22"
+            floodColor="#ea580c"
+            floodOpacity="0.22"
           />
         </filter>
       </defs>

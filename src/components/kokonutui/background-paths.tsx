@@ -286,7 +286,7 @@ const FloatingPaths = memo(function FloatingPaths({
 
 export default memo(function BackgroundPaths() {
   return (
-    <div className="absolute inset-0 z-0">
+    <div className="fixed inset-0 z-0">
       <FloatingPaths position={-1} />
     </div>
   );

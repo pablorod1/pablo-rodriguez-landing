@@ -26,13 +26,14 @@ const cards = [
 export const CardsList = memo(() => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      {cards.map((card) => (
+      {cards.map((card, idx) => (
         <CardFlip
           title={card.title}
           description={card.description}
           svgImage={card.svgImage}
           ctaText="Quiero mi página web"
           icon={card.icon}
+          key={idx}
         />
       ))}
     </div>
