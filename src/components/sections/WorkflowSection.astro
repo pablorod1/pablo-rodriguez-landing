@@ -27,66 +27,26 @@
 // Este bloque puede funcionar muy bien con una línea de tiempo visual o iconografía.
 
 import SectionComponent from "../SectionComponent.astro";
-import MagicBento, {
-  type BentoCardProps,
-} from "@/components/react-bits/Components/MagicBento/MagicBento";
-const cardData: BentoCardProps[] = [
-  {
-    color: "#18181b",
-    title: "Entendemos tu negocio",
-    description:
-      "Hablamos contigo para conocer tu empresa, tus objetivos y a tu cliente ideal. Cuanto más sepamos, mejor será tu web.",
-    label: "Primera reunión",
-  },
-  {
-    color: "#18181b",
-    title: "Propuesta visual",
-    description:
-      "Creamos una propuesta de diseño adaptada a tu marca, que podrás revisar antes de continuar.",
-    label: "Te presentamos un diseño inicial",
-  },
-  {
-    color: "#18181b",
-    title: "Construimos tu página web",
-    description:
-      "Codificamos tu web siguiendo las mejores prácticas de rendimiento, diseño responsive y SEO.",
-    label: "Desarrollo",
-  },
-  {
-    color: "#18181b",
-    title: "Validamos el resultado final",
-    description:
-      "Te presentamos la web funcional. Recogemos tus comentarios y aplicamos los ajustes necesarios.",
-    label: "Revisión y ajustes",
-  },
-  {
-    color: "#18181b",
-    title: "Dejamos tu web lista para despegar",
-    description:
-      "Antes de publicarla, realizamos una revisión completa: velocidad, responsive, SEO básico, formularios, enlaces, textos… Todo debe funcionar como un reloj.",
-    label: "Optimización final",
-  },
-  {
-    color: "#18181b",
-    title: "¡Tu web está online!",
-    description:
-      "Nos encargamos de todo: dominio, hosting, configuración y puesta en marcha.",
-    label: "Publicación",
-  },
-];
+import MagicBento from "@/components/react-bits/Components/MagicBento/MagicBento";
 ---
 
 <SectionComponent>
   <div class="space-y-8">
-    <h3 class="text-5xl font-bold text-primary text-pretty">
+    <h2
+      class="text-5xl font-bold text-primary text-pretty"
+      style="font-size: clamp(1.875rem, 4vw + 1rem, 2.2rem);"
+    >
       Cómo Creamos Tu Página Web Paso a Paso
-    </h3>
-    <p class="text-base text-secondary font-medium text-balance max-w-[80ch]">
+    </h2>
+    <p
+      class="text-base text-secondary font-medium text-balance max-w-[80ch]"
+      style="font-size: clamp(1rem, 2vw + 0.5rem, 1rem);"
+    >
       Sabemos que no eres técnico, y no necesitas serlo. Nuestro proceso está
       diseñado para que tú te enfoques en tu negocio, mientras nosotros nos
       encargamos de crear una página web profesional, optimizada y lista para
       funcionar desde el primer día.
     </p>
-    <MagicBento enableMagnetism={false} cards={cardData} client:only="react" />
+    <MagicBento enableTilt client:only="react" />
   </div>
 </SectionComponent>

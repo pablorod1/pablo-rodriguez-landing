@@ -2,6 +2,7 @@
 import { LiquidButton } from "@/components/kokonutui/liquid-glass-card";
 import { cn } from "@/lib/utils";
 import MetallicImage from "./MetallicImage";
+import type { buttonVariants } from "./ui/button";
 
 interface Link {
   href: string;
@@ -18,29 +19,40 @@ const links: Link[] = [
 const getLinkDelay = (index: number) => `motion-delay-${500 + index * 100}`;
 ---
 
+<!-- Responsive Header with Mobile Navigation -->
 <header
-  class="fixed z-50 top-4 w-full px-4 lg:px-0
+  class="fixed z-50 top-2 sm:top-4 w-full px-3 sm:px-4 lg:px-0
 motion-translate-x-in-[0%] motion-translate-y-in-[-123%] motion-opacity-in-[0%] motion-delay-500"
 >
   <nav
     class="relative overflow-hidden
     flex justify-between items-center
-    py-1 px-4 max-w-5xl mx-auto w-full min-h-16 h-full
-    rounded-lg
+    py-2 sm:py-1 px-3 sm:px-4 lg:px-6
+    max-w-5xl mx-auto w-full
+    min-h-14 sm:min-h-16 h-full
+    rounded-lg sm:rounded-xl
     backdrop-blur-lg
     bg-gradient-to-b from-zinc-900 to-background-950/80
     shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),_0_2px_6px_rgba(0,0,0,0.4)]
     hover:from-zinc-900 hover:to-background-950
     transition-colors duration-300 ease-in-out"
   >
+    <!-- Logo - Responsive sizing -->
     <a
       href="/"
-      class="motion-translate-y-in-[-80px] motion-opacity-in-[0%] motion-delay-800"
+      class="motion-translate-y-in-[-80px] motion-opacity-in-[0%] motion-delay-800
+      flex-shrink-0 relative z-50"
+      aria-label="Ir al inicio"
     >
-      <MetallicImage client:idle />
+      <div class="scale-75 sm:scale-90 lg:scale-100 origin-left">
+        <MetallicImage client:idle />
+      </div>
     </a>
+
+    <!-- Desktop Navigation -->
     <ul
-      class="flex items-center gap-10 text-secondary font-semibold text-sm tracking-wide"
+      class="hidden lg:flex items-center gap-6 xl:gap-10
+      text-secondary font-semibold tracking-wide"
     >
       {
         links.map((link, index) => (
@@ -58,16 +70,358 @@ motion-translate-x-in-[0%] motion-translate-y-in-[-123%] motion-opacity-in-[0%] 
                       : `motion-delay-${getLinkDelay(index)}`
             )}
           >
-            <a href={link.href}>{link.label}</a>
+            <a
+              href={link.href}
+              class="relative px-2 py-1 rounded-md transition-colors duration-200
+              hover:text-white
+              min-h-[44px] flex items-center text-sm"
+              aria-label={`Navegar a ${link.label}`}
+            >
+              {link.label}
+            </a>
           </li>
         ))
       }
     </ul>
-    <LiquidButton
-      size="sm"
-      client:load
-      className="text-white motion-scale-in motion-opacity-in-0 motion-delay-1800"
-      >Contáctame</LiquidButton
+
+    <!-- Mobile Menu Button -->
+    <button
+      id="mobile-menu-button"
+      class="lg:hidden relative z-50 p-2 rounded-md
+      text-secondary hover:text-white hover:bg-white/10
+      focus:outline-none focus:ring-2 focus:ring-white/20
+      transition-colors duration-200
+      min-h-[44px] min-w-[44px] flex items-center justify-center
+      motion-translate-y-in-[-30px] motion-opacity-in-[0%] motion-delay-1400"
+      aria-label="Abrir menú de navegación"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
     >
+      <!-- Hamburger Icon -->
+      <div
+        class="hamburger-icon w-6 h-6 flex flex-col justify-center items-center"
+      >
+        <span
+          class="hamburger-line block w-6 h-0.5 bg-current transition-all duration-300 ease-in-out"
+        ></span>
+        <span
+          class="hamburger-line block w-6 h-0.5 bg-current transition-all duration-300 ease-in-out mt-1.5"
+        ></span>
+        <span
+          class="hamburger-line block w-6 h-0.5 bg-current transition-all duration-300 ease-in-out mt-1.5"
+        ></span>
+      </div>
+    </button>
+
+    <!-- Desktop CTA Button -->
+    <div class="hidden sm:block">
+      <LiquidButton
+        size="sm"
+        client:load
+        className="text-white motion-scale-in motion-opacity-in-0 motion-delay-1800 min-h-[44px] px-4 lg:px-6 text-xs sm:text-sm font-medium hover:scale-105 active:scale-95 transition-transform duration-200"
+        aria-label="Contactar para solicitar página web"
+      >
+        <span class="hidden sm:inline">Contáctame</span>
+        <span class="sm:hidden">CTA</span>
+      </LiquidButton>
+    </div>
   </nav>
+
+  <!-- Mobile Menu Overlay -->
+  <div
+    id="mobile-menu"
+    class="lg:hidden fixed inset-0 top-0 bg-black/50 backdrop-blur-sm z-50
+      opacity-0 pointer-events-none transition-opacity duration-300 ease-in-out h-full min-h-screen"
+    aria-hidden="true"
+  >
+    <!-- Mobile Menu Panel -->
+    <div
+      class="fixed top-0 right-0 h-full w-80 max-w-[85vw]
+      bg-gradient-to-b from-zinc-900 to-background-950
+      shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out
+      overflow-y-auto"
+    >
+      <!-- Mobile Menu Header -->
+      <div
+        class="flex items-center justify-between p-4 border-b border-white/10"
+      >
+        <div class="scale-75">
+          <MetallicImage client:load />
+        </div>
+        <button
+          id="mobile-menu-close"
+          class="p-2 rounded-md text-secondary hover:text-white hover:bg-white/10
+          focus:outline-none focus:ring-2 focus:ring-white/20
+          min-h-[44px] min-w-[44px] flex items-center justify-center"
+          aria-label="Cerrar menú de navegación"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Mobile Navigation Links -->
+      <nav class="flex flex-col p-4 space-y-2">
+        {
+          links.map((link, index) => (
+            <a
+              href={link.href}
+              class="flex items-center px-4 py-3 rounded-lg text-secondary hover:text-white 
+              hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/20
+              transition-colors duration-200 font-medium text-base
+              min-h-[44px]"
+              aria-label={`Navegar a ${link.label}`}
+            >
+              {link.label}
+            </a>
+          ))
+        }
+
+        <!-- Mobile CTA Button -->
+        <div class="pt-4 border-t border-white/10 mt-4">
+          <LiquidButton
+            size="lg"
+            client:load
+            className="w-full text-white font-medium text-base min-h-[48px] hover:scale-[1.02] active:scale-[0.98] transition-transform duration-200"
+            aria-label="Contactar para solicitar página web"
+          >
+            Quiero mi página web
+          </LiquidButton>
+        </div>
+      </nav>
+    </div>
+  </div>
 </header>
+
+<!-- Mobile Menu JavaScript -->
+<script>
+  class ResponsiveHeader {
+    private mobileMenuButton: HTMLElement | null;
+    private mobileMenu: HTMLElement | null;
+    private mobileMenuClose: HTMLElement | null;
+    private hamburgerLines: NodeListOf<Element>;
+    private isMenuOpen: boolean;
+
+    constructor() {
+      this.mobileMenuButton = document.getElementById("mobile-menu-button");
+      this.mobileMenu = document.getElementById("mobile-menu");
+      this.mobileMenuClose = document.getElementById("mobile-menu-close");
+      this.hamburgerLines = document.querySelectorAll(".hamburger-line");
+      this.isMenuOpen = false;
+
+      this.init();
+    }
+
+    init(): void {
+      // Event listeners
+      this.mobileMenuButton?.addEventListener("click", () => this.toggleMenu());
+      this.mobileMenuClose?.addEventListener("click", () => this.closeMenu());
+      this.mobileMenu?.addEventListener("click", (e: Event) => {
+        if (e.target === this.mobileMenu) this.closeMenu();
+      });
+
+      // Close menu on escape key
+      document.addEventListener("keydown", (e: KeyboardEvent) => {
+        if (e.key === "Escape" && this.isMenuOpen) {
+          this.closeMenu();
+        }
+      });
+
+      // Close menu on resize to desktop
+      window.addEventListener("resize", () => {
+        if (window.innerWidth >= 1024 && this.isMenuOpen) {
+          this.closeMenu();
+        }
+      });
+
+      // Prevent scroll when menu is open
+      this.setupScrollLock();
+    }
+
+    toggleMenu(): void {
+      if (this.isMenuOpen) {
+        this.closeMenu();
+      } else {
+        this.openMenu();
+      }
+    }
+
+    openMenu(): void {
+      this.isMenuOpen = true;
+      this.mobileMenuButton?.setAttribute("aria-expanded", "true");
+      this.mobileMenu?.setAttribute("aria-hidden", "false");
+
+      // Show overlay
+      this.mobileMenu?.classList.remove("opacity-0", "pointer-events-none");
+      this.mobileMenu?.classList.add("opacity-100");
+
+      // Slide in panel
+      const panel = this.mobileMenu?.querySelector("div") as HTMLElement;
+      setTimeout(() => {
+        panel?.classList.remove("translate-x-full");
+        panel?.classList.add("translate-x-0");
+      }, 10);
+
+      // Animate hamburger to X
+      this.animateHamburgerToX();
+
+      // Lock scroll
+      // document.body.style.overflow = "hidden";
+
+      // Focus management
+      setTimeout(() => {
+        (this.mobileMenuClose as HTMLElement)?.focus();
+      }, 300);
+    }
+
+    closeMenu(): void {
+      this.isMenuOpen = false;
+      this.mobileMenuButton?.setAttribute("aria-expanded", "false");
+      this.mobileMenu?.setAttribute("aria-hidden", "true");
+
+      // Slide out panel
+      const panel = this.mobileMenu?.querySelector("div") as HTMLElement;
+      panel?.classList.remove("translate-x-0");
+      panel?.classList.add("translate-x-full");
+
+      // Hide overlay after animation
+      setTimeout(() => {
+        this.mobileMenu?.classList.remove("opacity-100");
+        this.mobileMenu?.classList.add("opacity-0", "pointer-events-none");
+      }, 300);
+
+      // Animate X back to hamburger
+      this.animateXToHamburger();
+
+      // Unlock scroll
+      // document.body.style.overflow = "auto";
+
+      // Return focus to menu button
+      (this.mobileMenuButton as HTMLElement)?.focus();
+    }
+
+    animateHamburgerToX(): void {
+      const lines = Array.from(this.hamburgerLines) as HTMLElement[];
+      if (lines.length >= 3) {
+        lines[0].style.transform = "rotate(45deg) translate(6px, 6px)";
+        lines[1].style.opacity = "0";
+        lines[2].style.transform = "rotate(-45deg) translate(6px, -6px)";
+      }
+    }
+
+    animateXToHamburger(): void {
+      const lines = Array.from(this.hamburgerLines) as HTMLElement[];
+      if (lines.length >= 3) {
+        lines[0].style.transform = "none";
+        lines[1].style.opacity = "1";
+        lines[2].style.transform = "none";
+      }
+    }
+
+    setupScrollLock(): void {
+      // Prevent scroll on touch devices when menu is open
+      this.mobileMenu?.addEventListener(
+        "touchmove",
+        (e: TouchEvent) => {
+          if (this.isMenuOpen) {
+            e.preventDefault();
+          }
+        },
+        { passive: false }
+      );
+    }
+  }
+
+  // Initialize when DOM is loaded
+  function initializeHeader() {
+    if (document.querySelector(".responsive-header-initialized")) return;
+
+    const header = document.querySelector("header");
+    if (header) {
+      header.classList.add("responsive-header-initialized");
+      new ResponsiveHeader();
+    }
+  }
+
+  // Initialize on different events
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initializeHeader);
+  } else {
+    initializeHeader();
+  }
+
+  // Re-initialize on Astro navigation (SPA mode)
+  document.addEventListener("astro:page-load", initializeHeader);
+</script>
+
+<!-- Responsive Header Styles -->
+<style>
+  /* Mobile menu animations */
+  @media (max-width: 1023px) {
+    .hamburger-line {
+      transform-origin: center;
+      will-change: transform, opacity;
+    }
+  }
+
+  /* Enhanced focus styles for accessibility */
+  button:focus-visible,
+  a:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.8);
+    outline-offset: 2px;
+  }
+
+  /* Smooth transitions for reduced motion users */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* Mobile-first container queries for adaptive components */
+  @container (min-width: 768px) {
+    .container-responsive {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+  }
+
+  /* Touch target improvements */
+  @media (hover: none) and (pointer: coarse) {
+    button,
+    a {
+      min-height: 48px;
+      min-width: 48px;
+    }
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    nav {
+      border: 1px solid;
+    }
+
+    button,
+    a {
+      border: 1px solid transparent;
+    }
+
+    button:hover,
+    a:hover {
+      border-color: currentColor;
+    }
+  }
+</style>

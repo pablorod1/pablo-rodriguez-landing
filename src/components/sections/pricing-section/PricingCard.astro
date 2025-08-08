@@ -1,0 +1,85 @@
+---
+import { LiquidButton } from "@/components/kokonutui/liquid-glass-card";
+import { cn } from "@/lib/utils";
+import { CheckCircle } from "lucide-react";
+
+const {
+  title,
+  description,
+  price,
+  buttonText,
+  features,
+  primary = false,
+} = Astro.props;
+---
+
+<div
+  class="relative w-full h-auto overflow-hidden border border-zinc-800/50 rounded-2xl p-6 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),_0_2px_6px_rgba(0,0,0,0.4)] transition bg-gradient-to-b from-zinc-900 to-black"
+>
+  <div class="flex justify-between items-center">
+    <h3 class="text-lg font-light text-primary">{title}</h3>
+
+    {
+      primary ? (
+        <div class="rounded-full bg-gradient-to-r from-special-500 to-special-800 shadow shadow-special-700 text-white px-3 py-1 text-xs font-medium">
+          <span>Más Popular</span>
+        </div>
+      ) : null
+    }
+  </div>
+  <div class="py-8">
+    <p class="text-gray-500 text-xs">Desde</p>
+    <span
+      class={cn(
+        "text-4xl font-bold text-primary",
+        price.includes("Contacta") ? "text-xl" : ""
+      )}>{price}</span
+    >
+  </div>
+  <div class="py-2">
+    <p class="text-sm text-gray-400 font-medium mb-4">
+      {description || "Incluye lo básico para empezar tu presencia online."}
+    </p>
+  </div>
+  <LiquidButton
+    client:only="react"
+    size={"sm"}
+    className="w-full bg-gradient-to-r from-special-700 to-special-900 hover:from-special-600 hover:to-special-900"
+  >
+    {buttonText}
+  </LiquidButton>
+  <div class="relative flex items-center w-full my-6">
+    <div
+      class={cn(
+        "flex-grow h-px bg-gradient-to-r from-transparent  to-transparent",
+        primary ? "via-special-700" : "via-zinc-800"
+      )}
+    >
+    </div>
+    <span
+      class="mx-1 px-4 py-1 rounded-full bg-zinc-900/80 border border-zinc-800 text-xs font-medium text-gray-200 shadow-sm"
+    >
+      {primary ? "Incluye" : "Características"}
+    </span>
+    <div
+      class={cn(
+        "flex-grow h-px bg-gradient-to-l from-transparent  to-transparent",
+        primary ? "via-special-700" : "via-zinc-800"
+      )}
+    >
+    </div>
+  </div>
+  <ul class="text-left text-sm text-gray-300 space-y-2 mb-6">
+    {
+      features.map((feature: string) => (
+        <li class="inline-flex items-center gap-2">
+          <CheckCircle
+            strokeWidth={2}
+            className={cn("size-4", primary ? "text-special-800" : "")}
+          />
+          {feature}
+        </li>
+      ))
+    }
+  </ul>
+</div>

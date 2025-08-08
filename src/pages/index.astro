@@ -3,20 +3,18 @@ import Layout from "@/layouts/Layout.astro";
 import HeroSection from "@/components/sections/HeroSection.astro";
 import HookSection from "@/components/sections/HookSection.astro";
 import WorkflowSection from "@/components/sections/WorkflowSection.astro";
+import PricingSection from "@/components/sections/PricingSection.astro";
 ---
 
 <Layout>
-  <main>
+  <main class="z-50 overflow-x-hidden">
     <HeroSection />
-    <section
-      class="space-y-64 px-4 sm:px-6 lg:px-8 py-24 relative bg-background-950 rounded-t-4xl shadow-[inset_0_1px_10px_rgba(255,255,255,0.2),_0_2px_6px_rgba(0,0,0,0.4)]"
-    >
-      <HookSection />
-      <WorkflowSection />
-      <!--<PricingSection />
-    <FaqsSection />
+
+    <HookSection />
+    <WorkflowSection />
+    <PricingSection />
+    <!--<FaqsSection />
     <TestimonialsSection />
     <ContactSection /> -->
-    </section>
   </main>
 </Layout>

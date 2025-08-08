@@ -1,23 +1,96 @@
-<!-- 
- 🧩 H2: ¿Cuánto Cuesta Crear una Página Web?
+---
+// 🧩 H2: ¿Cuánto Cuesta Crear una Página Web?
 
-💬 Copy Introductorio:
-Entendemos que el coste es una de las principales preocupaciones a la hora de crear una página web. Por eso, ofrecemos soluciones transparentes, adaptadas a las necesidades y tamaño de tu negocio, sin sorpresas ni letra pequeña.
+// 💬 Copy Introductorio:
+// Entendemos que el coste es una de las principales preocupaciones a la hora de crear una página web. Por eso, ofrecemos soluciones transparentes, adaptadas a las necesidades y tamaño de tu negocio, sin sorpresas ni letra pequeña.
 
-✅ Rangos orientativos o paquetes (ejemplo claro y sencillo):
+// ✅ Rangos orientativos o paquetes (ejemplo claro y sencillo):
 
-Web Básica desde 590 €
-Ideal para negocios que necesitan presencia digital profesional, con hasta 5 secciones, diseño responsive y SEO básico.
+// Web Básica desde 590 €
+// Ideal para negocios que necesitan presencia digital profesional, con hasta 5 secciones, diseño responsive y SEO básico.
 
-Web Avanzada desde 1.200 €
-Perfecta para empresas que requieren funcionalidades extra, integración con redes sociales, formularios personalizados y optimización avanzada.
+// Web Avanzada desde 1.200 €
+// Perfecta para empresas que requieren funcionalidades extra, integración con redes sociales, formularios personalizados y optimización avanzada.
 
-Web a Medida
-Para proyectos con requisitos específicos: tiendas online, reservas, blogs o integraciones personalizadas. Contacta para un presupuesto personalizado.
+// Web a Medida
+// Para proyectos con requisitos específicos: tiendas online, reservas, blogs o integraciones personalizadas. Contacta para un presupuesto personalizado.
 
-🔘 CTA claro y visible:
-[ Solicita tu presupuesto personalizado ]
+// 🔘 CTA claro y visible:
+// [ Solicita tu presupuesto personalizado ]
 
-Recuerda: Invertir en una página web profesional es invertir en la puerta de entrada principal a tu negocio. Una web bien diseñada y optimizada recupera su coste generando más clientes y ventas.
+// Recuerda: Invertir en una página web profesional es invertir en la puerta de entrada principal a tu negocio. Una web bien diseñada y optimizada recupera su coste generando más clientes y ventas.
+import SectionComponent from "../SectionComponent.astro";
+import PricingCard from "./pricing-section/PricingCard.astro";
 
--->
+const cards = [
+  {
+    title: "Web Básica",
+    price: "590€",
+    buttonText: "Solicita tu presupuesto",
+    features: [
+      "Hasta 5 secciones",
+      "Diseño responsive",
+      "SEO básico incluido",
+      "Integración con redes sociales",
+    ],
+  },
+  {
+    title: "Web Avanzada",
+    price: "1200€",
+    buttonText: "Solicita tu presupuesto",
+    features: [
+      "Funcionalidades extra",
+      "Formularios personalizados",
+      "Optimización avanzada",
+      "Soporte técnico incluido",
+    ],
+    primary: true,
+  },
+  {
+    title: "Web a Medida",
+    price: "Contacta para presupuesto",
+    buttonText: "Solicita tu presupuesto personalizado",
+    features: [
+      "Proyectos específicos",
+      "Integraciones personalizadas",
+      "Diseño único y adaptado a tus necesidades",
+      "Asesoramiento continuo durante el desarrollo",
+    ],
+  },
+];
+---
+
+<SectionComponent>
+  <div class="space-y-16">
+    <div class="w-full grid items-center justify-center gap-8 text-center">
+      <h2
+        class="text-5xl font-bold text-primary text-pretty"
+        style="font-size: clamp(1.875rem, 4vw + 1rem, 2.2rem);"
+      >
+        ¿Cuánto Cuesta Hacer una Página Web?
+      </h2>
+      <p
+        class="text-base text-secondary font-medium text-balance max-w-[80ch]"
+        style="font-size: clamp(1rem, 2vw + 0.5rem, 1rem);"
+      >
+        El coste de una página web depende de lo que tu negocio necesite: no es
+        lo mismo una web informativa que una con funcionalidades avanzadas. Por
+        eso ofrecemos soluciones claras y adaptadas, sin plantillas genéricas ni
+        precios inflados.
+      </p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {
+        cards.map((card) => (
+          <PricingCard
+            title={card.title}
+            price={card.price}
+            buttonText={card.buttonText}
+            features={card.features}
+            primary={card.primary}
+          />
+        ))
+      }
+    </div>
+  </div>
+</SectionComponent>

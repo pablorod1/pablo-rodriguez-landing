@@ -33,34 +33,51 @@ const cardItems: CardItem[] = [
 ];
 ---
 
-<section class="sticky inset-0 py-12 min-h-screen max-w-7xl mx-auto grid">
-  <div class="mt-32 w-full z-10 relative">
-    <h1
-      class="text-5xl mb-8 font-bold text-primary max-w-[25ch] motion-preset-blur-right motion-duration-1500 motion-delay-2000"
+<section
+  class="relative py-4 sm:py-8 md:py-12 min-h-dvh max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+>
+  <!-- Main content container with responsive layout -->
+  <div
+    class="relative grid grid-cols-1 lg:grid-cols-3 justify-between gap-4 xl:gap-0"
+  >
+    <!-- Text content column -->
+    <div
+      class="col-span-2 order-1 flex flex-col justify-center space-y-2 sm:space-y-4 w-full"
     >
-      Creamos la página web profesional que tu empresa necesita
-    </h1>
+      <h1
+        class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary leading-tight text-balance motion-preset-blur-right motion-duration-1500 motion-delay-2000"
+        style="font-size: clamp(1.875rem, 4vw + 1rem, 2.4rem);"
+      >
+        Creamos la página web profesional que tu empresa necesita
+      </h1>
 
-    <p
-      class="text-lg mb-6 text-secondary max-w-[40ch] font-medium motion-preset-blur-right motion-duration-1600 motion-delay-2500"
-    >
-      Tu web es la puerta de entrada a tu negocio. Haz que te encuentren y
-      confíen desde el primer clic.
-    </p>
-    <Button
-      size="lg"
-      className="border-0 font-semibold motion-scale-in-0 motion-opacity-in-0 motion-delay-2700"
-    >
-      Quiero mi página web
-    </Button>
+      <p
+        class="text-base sm:text-lg md:text-xl text-secondary font-medium text-balance leading-relaxed motion-preset-blur-right motion-duration-1600 motion-delay-2500"
+        style="font-size: clamp(1rem, 2vw + 0.5rem, 1.2rem);"
+      >
+        Tu web es la puerta de entrada a tu negocio. Haz que te encuentren y
+        confíen desde el primer clic.
+      </p>
 
-    <div class="relative h-[300px] motion-opacity-in-0 motion-delay-3000">
+      <div class="pt-2">
+        <Button
+          className="font-semibold motion-scale-in-0 motion-opacity-in-0 motion-delay-2700 hover:scale-105 transition-transform duration-200"
+        >
+          Quiero mi página web
+        </Button>
+      </div>
+    </div>
+
+    <!-- Card demonstration column -->
+    <div
+      class="order-2 relative max-w-xs w-full h-[250px] sm:h-[300px] md:h-[400px] lg:h-[500px] motion-opacity-in-0 motion-delay-3000"
+    >
       <CardSwapDemo
         cardDistance={15}
         verticalDistance={25}
         skewAmount={4}
+        width={800}
         height={600}
-        width={780}
         delay={8000}
         pauseOnHover={false}
         items={cardItems}

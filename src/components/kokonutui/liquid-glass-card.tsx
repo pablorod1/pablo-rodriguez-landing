@@ -32,12 +32,12 @@ const liquidbuttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
-        default: "h-9 px-4 py-2 has-[>svg]:px-3",
-        sm: "h-8 text-xs gap-1.5 px-4 has-[>svg]:px-4",
-        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
-        xl: "h-12 rounded-md px-8 has-[>svg]:px-6",
-        xxl: "h-14 rounded-md px-10 has-[>svg]:px-8",
-        icon: "size-9",
+        default: "h-9 px-4 py-2 has-[>svg]:px-3 min-h-[44px] sm:min-h-[36px]",
+        sm: "h-8 sm:h-10 text-xs sm:text-sm gap-1.5 px-3 sm:px-4 has-[>svg]:px-3 sm:has-[>svg]:px-4 min-h-[44px] sm:min-h-[32px]",
+        lg: "h-10 sm:h-12 rounded-md px-4 sm:px-6 text-sm sm:text-base has-[>svg]:px-4 min-h-[44px] sm:min-h-[40px]",
+        xl: "h-12 sm:h-14 rounded-md px-6 sm:px-8 text-base sm:text-lg has-[>svg]:px-6 min-h-[44px] sm:min-h-[48px]",
+        xxl: "h-14 sm:h-16 rounded-md px-8 sm:px-10 text-lg sm:text-xl has-[>svg]:px-8 min-h-[44px] sm:min-h-[56px]",
+        icon: "size-9 min-h-[44px] min-w-[44px] sm:size-9 sm:min-h-[36px] sm:min-w-[36px]",
       },
       rounded: {
         default: "rounded-md",
@@ -127,7 +127,7 @@ export const LiquidButton = React.forwardRef<
             }
               shadow-[0_0_6px_rgba(0,0,0,0.03),0_2px_6px_rgba(0,0,0,0.08),inset_3px_3px_0.5px_-3px_rgba(0,0,0,0.9),inset_-3px_-3px_0.5px_-3px_rgba(0,0,0,0.85),inset_1px_1px_1px_-0.5px_rgba(0,0,0,0.6),inset_-1px_-1px_1px_-0.5px_rgba(0,0,0,0.6),inset_0_0_6px_6px_rgba(0,0,0,0.12),inset_0_0_2px_2px_rgba(0,0,0,0.06),0_0_12px_rgba(255,255,255,0.15)] 
           transition-all 
-          dark:shadow-[0_0_8px_rgba(0,0,0,0.03),0_2px_6px_rgba(0,0,0,0.08),inset_3px_3px_0.5px_-3.5px_rgba(255,255,255,0.09),inset_-3px_-3px_0.5px_-3.5px_rgba(255,255,255,0.85),inset_1px_1px_1px_-0.5px_rgba(255,255,255,0.6),inset_-1px_-1px_1px_-0.5px_rgba(255,255,255,0.6),inset_0_0_6px_6px_rgba(255,255,255,0.12),inset_0_0_2px_2px_rgba(255,255,255,0.06),0_0_12px_rgba(0,0,0,0.15)]`}
+         `}
           />
           <div
             className="absolute top-0 left-0 isolate -z-10 h-full w-full overflow-hidden rounded-md"

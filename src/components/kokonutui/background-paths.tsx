@@ -130,7 +130,7 @@ const FloatingPaths = memo(function FloatingPaths({
   );
 
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+    <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
       <svg
         className="w-full h-full text-slate-950/40 dark:text-white/40"
         viewBox="-2400 -800 4800 1600"

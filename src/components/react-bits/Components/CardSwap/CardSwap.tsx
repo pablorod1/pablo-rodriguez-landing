@@ -11,6 +11,7 @@ import React, {
   useCallback,
 } from "react";
 import gsap from "gsap";
+import { cn } from "@/lib/utils";
 import "@/styles/global.css";
 
 export type EasingType = "linear" | "elastic";
@@ -71,6 +72,17 @@ const ANIMATION_CONFIGS: Record<EasingType, AnimationConfig> = {
   },
 } as const;
 
+// Responsive distance calculator based on viewport width
+const getResponsiveDistance = (baseDistance: number): number => {
+  if (typeof window === "undefined") return baseDistance;
+
+  const vw = window.innerWidth;
+  if (vw < 480) return baseDistance * 0.5; // Mobile
+  if (vw < 768) return baseDistance * 0.7; // Large mobile
+  if (vw < 1024) return baseDistance * 0.8; // Tablet
+  return baseDistance; // Desktop
+};
+
 const createSlot = (
   index: number,
   distanceX: number,
@@ -120,6 +132,20 @@ const CardSwap: React.FC<CardSwapProps> = ({
 }) => {
   // Get animation configuration
   const config = useMemo(() => ANIMATION_CONFIGS[easing], [easing]);
+
+  // Calculate responsive distances
+  const responsiveCardDistance = useMemo(
+    () => getResponsiveDistance(cardDistance),
+    [cardDistance]
+  );
+  const responsiveVerticalDistance = useMemo(
+    () => getResponsiveDistance(verticalDistance),
+    [verticalDistance]
+  );
+  const responsiveSkew = useMemo(
+    () => getResponsiveDistance(skewAmount) * 0.8,
+    [skewAmount]
+  );
 
   const childArray = useMemo(
     () => Children.toArray(children) as ReactElement<CardProps>[],
@@ -185,8 +211,8 @@ const CardSwap: React.FC<CardSwapProps> = ({
 
       const slot = createSlot(
         position,
-        cardDistance,
-        verticalDistance,
+        responsiveCardDistance,
+        responsiveVerticalDistance,
         cardRefs.length
       );
       timeline.set(element, { zIndex: slot.zIndex }, "promote");
@@ -208,8 +234,8 @@ const CardSwap: React.FC<CardSwapProps> = ({
     // Animate front card returning to back
     const backSlot = createSlot(
       cardRefs.length - 1,
-      cardDistance,
-      verticalDistance,
+      responsiveCardDistance,
+      responsiveVerticalDistance,
       cardRefs.length
     );
 
@@ -243,7 +269,7 @@ const CardSwap: React.FC<CardSwapProps> = ({
     timeline.call(() => {
       cardOrder.current = [...remainingCards, frontCardIndex];
     });
-  }, [cardRefs, cardDistance, verticalDistance, config]);
+  }, [cardRefs, responsiveCardDistance, responsiveVerticalDistance, config]);
 
   useEffect(() => {
     const totalCards = cardRefs.length;
@@ -254,8 +280,13 @@ const CardSwap: React.FC<CardSwapProps> = ({
         if (cardRef.current) {
           applyCardTransform(
             cardRef.current,
-            createSlot(index, cardDistance, verticalDistance, totalCards),
-            skewAmount
+            createSlot(
+              index,
+              responsiveCardDistance,
+              responsiveVerticalDistance,
+              totalCards
+            ),
+            responsiveSkew
           );
         }
       });
@@ -305,11 +336,11 @@ const CardSwap: React.FC<CardSwapProps> = ({
       timelineRef.current?.kill();
     };
   }, [
-    cardDistance,
-    verticalDistance,
+    responsiveCardDistance,
+    responsiveVerticalDistance,
     delay,
     pauseOnHover,
-    skewAmount,
+    responsiveSkew,
     performSwap,
     cardRefs,
   ]);
@@ -341,10 +372,23 @@ const CardSwap: React.FC<CardSwapProps> = ({
   return (
     <div
       ref={containerRef}
-      className={`absolute bottom-0 right-0 transform translate-x-[5%] translate-y-[20%] origin-bottom-right perspective-[900px] overflow-visible max-[768px]:translate-x-[25%] max-[768px]:translate-y-[25%] max-[768px]:scale-[0.75] max-[480px]:translate-x-[25%] max-[480px]:translate-y-[25%] max-[480px]:scale-[0.55] ${className}`}
+      className={cn(
+        // Base positioning and transforms
+        "absolute bottom-0 right-0 origin-bottom-right overflow-visible",
+        // Desktop positioning
+        "transform translate-x-[5%] translate-y-[20%]",
+        // Tablet responsive adjustments
+        "md:translate-x-[15%] md:translate-y-[15%] md:scale-[0.85]",
+        // Mobile responsive adjustments
+        "sm:translate-x-[20%] sm:translate-y-[20%] sm:scale-[0.7]",
+        "max-sm:translate-x-[25%] max-sm:translate-y-[25%] max-sm:scale-[0.6]",
+        // 3D perspective and performance
+        "perspective-[900px] [transform-style:preserve-3d]",
+        className
+      )}
       style={{
-        width,
-        height,
+        width: width || "100%",
+        height: height || "100%",
         willChange: "transform",
         transformStyle: "preserve-3d",
       }}

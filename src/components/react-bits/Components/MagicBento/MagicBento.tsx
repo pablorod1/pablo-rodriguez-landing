@@ -13,6 +13,9 @@ import React, {
   useTransition,
 } from "react";
 import { gsap } from "gsap";
+import Paso1SVG from "@/components/sections/workflow-section/Paso1SVG";
+import Paso2SVG from "@/components/sections/workflow-section/Paso2SVG";
+import { TerminalWorkflow } from "@/components/TerminalWorkflow";
 
 export interface BentoCardProps {
   color?: string;
@@ -21,6 +24,7 @@ export interface BentoCardProps {
   label?: string;
   textAutoHide?: boolean;
   disableAnimations?: boolean;
+  image?: React.ReactNode;
 }
 
 export interface BentoProps {
@@ -49,44 +53,53 @@ const MOUSE_MOVE_THROTTLE = 16; // ~60fps
 const PARTICLE_ANIMATION_DELAY = 100;
 
 // Memoized card data to prevent unnecessary re-renders
-const cardData: readonly BentoCardProps[] = Object.freeze([
-  Object.freeze({
+const cardData: BentoCardProps[] = [
+  {
     color: "#18181b",
-    title: "Analytics",
-    description: "Track user behavior",
-    label: "Insights",
-  }),
-  Object.freeze({
+    title: "Entendemos tu negocio",
+    description:
+      "Hablamos contigo para conocer tu empresa, tus objetivos y a tu cliente ideal. Cuanto más sepamos, mejor será tu web.",
+    label: "Primera reunión",
+    image: <Paso1SVG />,
+  },
+  {
     color: "#18181b",
-    title: "Dashboard",
-    description: "Centralized data view",
-    label: "Overview",
-  }),
-  Object.freeze({
+    title: "Propuesta visual",
+    description:
+      "Creamos una propuesta de diseño adaptada a tu marca, que podrás revisar antes de continuar.",
+    label: "Te presentamos un diseño inicial",
+    image: <Paso2SVG />,
+  },
+  {
     color: "#18181b",
-    title: "Collaboration",
-    description: "Work together seamlessly",
-    label: "Teamwork",
-  }),
-  Object.freeze({
+    title: "Construimos tu página web",
+    description:
+      "Codificamos tu web siguiendo las mejores prácticas de rendimiento, diseño responsive y SEO.",
+    label: "Desarrollo",
+    image: <TerminalWorkflow />,
+  },
+  {
     color: "#18181b",
-    title: "Automation",
-    description: "Streamline workflows",
-    label: "Efficiency",
-  }),
-  Object.freeze({
+    title: "Validamos el resultado final",
+    description:
+      "Te presentamos la web funcional. Recogemos tus comentarios y aplicamos los ajustes necesarios.",
+    label: "Revisión y ajustes",
+  },
+  {
     color: "#18181b",
-    title: "Integration",
-    description: "Connect favorite tools",
-    label: "Connectivity",
-  }),
-  Object.freeze({
+    title: "Dejamos tu web lista para despegar",
+    description:
+      "Antes de publicarla, realizamos una revisión completa: velocidad, responsive, SEO básico, formularios, enlaces, textos… Todo debe funcionar como un reloj.",
+    label: "Optimización final",
+  },
+  {
     color: "#18181b",
-    title: "Security",
-    description: "Enterprise-grade protection",
-    label: "Protection",
-  }),
-]);
+    title: "¡Tu web está online!",
+    description:
+      "Nos encargamos de todo: dominio, hosting, configuración y puesta en marcha.",
+    label: "Publicación",
+  },
+];
 
 // Utility function for creating particle elements (moved outside component)
 const createParticleElement = (
@@ -380,7 +393,6 @@ const ParticleCard = memo<{
       width: ${maxDistance * 2}px;
       height: ${maxDistance * 2}px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(${glowColor}, 0.3) 0%, rgba(${glowColor}, 0.1) 30%, transparent 60%);
       left: ${x - maxDistance}px;
       top: ${y - maxDistance}px;
       pointer-events: none;
@@ -666,7 +678,7 @@ const BentoCardGrid = memo<{
 
   return (
     <div
-      className="bento-section grid gap-2 p-2 md:p-0 select-none relative"
+      className="bento-section grid gap-6 select-none relative "
       style={gridStyle}
       ref={gridRef}
     >
@@ -722,7 +734,6 @@ const MagicBento = memo<BentoProps>(
       () => ({
         "--glow-color": glowColor,
         "--border-color": "var(--color-special-800)",
-        "--background-dark": "var(--color-background-950)",
         "--white": "hsl(0, 0%, 100%)",
         "--orange-primary": "var(--color-special-500)",
         "--orange-glow": "rgba(255, 105, 0, 0.2)",
@@ -741,7 +752,6 @@ const MagicBento = memo<BentoProps>(
         --glow-radius: 200px;
         --glow-color: ${glowColor};
         --border-color: var(--color-special-800);
-        --background-dark: var(--color-background-950);
         --white: hsl(0, 0%, 100%);
         --orange-primary: var(--color-special-500);
         --orange-glow: rgba(255, 105, 0, 0.2);
@@ -855,7 +865,7 @@ const MagicBento = memo<BentoProps>(
       @media (max-width: 599px) {
         .card-responsive {
           grid-template-columns: 1fr;
-          width: 90%;
+          width: 100%;
           margin: 0 auto;
           padding: 0.5rem;
         }
@@ -879,7 +889,7 @@ const MagicBento = memo<BentoProps>(
     // Memoized card rendering function for performance
     const renderCard = useCallback(
       (card: BentoCardProps, index: number) => {
-        const baseClassName = `card flex flex-col justify-between relative aspect-[4/3] min-h-[200px] w-full max-w-full p-5 rounded-[20px] border border-solid font-light overflow-hidden transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(0,0,0,0.15)] ${
+        const baseClassName = `card bg-gradient-to-b from-zinc-950 to-black flex flex-col justify-between relative aspect-[4/3] min-h-[360px] w-full max-w-full p-5 rounded-[20px] border border-solid font-light overflow-hidden transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(0,0,0,0.15)] ${
           enableBorderGlow ? "card--border-glow" : ""
         }`;
 
@@ -910,6 +920,11 @@ const MagicBento = memo<BentoProps>(
               clickEffect={clickEffect}
               enableMagnetism={enableMagnetism}
             >
+              {card.image ? (
+                <div className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 flex items-center justify-center h-full w-full max-h-[280px]">
+                  {card.image}
+                </div>
+              ) : null}
               <CardContent card={card} textAutoHide={textAutoHide} />
             </ParticleCard>
           );
@@ -958,7 +973,7 @@ const MagicBento = memo<BentoProps>(
         )}
 
         <BentoCardGrid gridRef={gridRef}>
-          <div className="card-responsive grid gap-2">
+          <div className="card-responsive grid gap-4">
             {cards.map(renderCard)}
           </div>
         </BentoCardGrid>

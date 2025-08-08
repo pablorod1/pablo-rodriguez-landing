@@ -25,22 +25,28 @@
 //     Tú decides cómo quieres que te vean: promociones, servicios, testimonios, contacto... todo en un solo lugar.
 
 import SectionComponent from "../SectionComponent.astro";
-import { CardsList } from "../hook-section/CardsList";
+import { CardsList } from "./hook-section/CardsList";
 ---
 
 <SectionComponent>
   <div
-    class="grid grid-cols-1 md:grid-cols-2 items-start justify-between w-full gap-8 mb-32"
+    class="grid grid-cols-1 md:grid-cols-2 items-start justify-between w-full mb-16 lg:mb-24"
   >
-    <h2 class="text-5xl font-bold text-primary text-pretty">
+    <h2
+      class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary text-pretty"
+      style="font-size: clamp(1.875rem, 4vw + 1rem, 2.2rem);"
+    >
       ¿Por qué necesitas crear una página web?
     </h2>
-    <p class="text-base text-secondary font-medium text-balance max-w-prose">
+    <p
+      class="text-base text-secondary font-medium text-pretty"
+      style="font-size: clamp(0.75rem, 2vw + 0.5rem, 1rem);"
+    >
       Hoy en día, si no estás en internet, simplemente no existes. Tus
       potenciales clientes están buscando en Google lo que tú ofreces, pero si
       no tienes una web profesional, probablemente estén eligiendo a tu
       competencia.
     </p>
   </div>
-  <CardsList client:only="react" />
+  <CardsList client:load />
 </SectionComponent>

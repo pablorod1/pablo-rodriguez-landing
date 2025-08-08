@@ -35,7 +35,7 @@ const CardSwapDemo: React.FC<CardSwapDemoProps> = ({
   className,
   onCardClick,
 }) => {
-  // Memoize Safari elements to prevent unnecessary re-renders
+  // Memoize Safari elements with responsive positioning
   const safariElements = useMemo(
     () =>
       items.map((item, index) => (
@@ -44,7 +44,9 @@ const CardSwapDemo: React.FC<CardSwapDemoProps> = ({
           url={item.title}
           imageSrc={item.imageSrc}
           className={cn(
-            "absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2",
+            // Responsive positioning: center on mobile, offset on desktop
+            "absolute top-1/2 lg:top-full left-0 lg:left-1/2 -translate-x-1/2 -translate-y-1/2",
+            // 3D transform optimizations
             "[transform-style:preserve-3d] [will-change:transform] [backface-visibility:hidden]",
             "opacity-100"
           )}
@@ -63,7 +65,7 @@ const CardSwapDemo: React.FC<CardSwapDemoProps> = ({
       pauseOnHover={pauseOnHover}
       height={height}
       width={width}
-      className={className}
+      className={cn("[perspective:1000px]", className)}
       onCardClick={onCardClick}
     >
       {safariElements}
